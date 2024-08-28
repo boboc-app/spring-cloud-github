@@ -15,7 +15,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class GitHubContentClient(
     token: String,
-    uri: String = DEFAULT_HTTP_URI
+    uri: String = DEFAULT_BASE_URL
 ) {
 
     companion object {
@@ -23,11 +23,10 @@ class GitHubContentClient(
         const val DEFAULT_BASE_URL = "https://api.github.com"
         const val CONTENT_SEGMENT = "repos/{owner}/{repository}/contents/{path}"
         val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
-        val DEFAULT_HTTP_URI = "$DEFAULT_BASE_URL/$CONTENT_SEGMENT"
         val DIRECTORY_TYPE_REFERENCE = object : TypeReference<List<GitHubDirectoryContent>>() {}
     }
 
-    private val url = uri.toHttpUrlOrNull()!!
+    private val url = "$uri/$CONTENT_SEGMENT".toHttpUrlOrNull()!!
 
     private val httpClient: OkHttpClient = OkHttpClient().newBuilder().build()
 
@@ -78,7 +77,7 @@ class GitHubContentClient(
     fun getDirectoryContents(owner: String, repository: String, path: String, branch: String? = null): List<GitHubDirectoryContent>? {
         return getContentResponse(owner, repository, path, branch)
             .also {
-                if(!it.isDir()){
+                if( ! it.isDir()){
                     throw Exceptions.GitHubClientException("Path should be a directory.")
                 }
             }

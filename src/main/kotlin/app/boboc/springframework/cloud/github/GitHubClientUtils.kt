@@ -6,14 +6,16 @@ import okhttp3.HttpUrl
 import okhttp3.Response
 
 object GitHubClientUtils {
-    fun HttpUrl.replaceSegment(src : String, dst : String): HttpUrl {
+    fun HttpUrl.replaceSegment(src: String, dst: String): HttpUrl {
         return newBuilder().apply {
-            val idx = pathSegments.indexOf(src).takeIf { it!=-1 } ?: throw Exception()
+            val idx = pathSegments.indexOf(src).takeIf { it != -1 }
+                ?: throw Exceptions.GitHubClientException("Fail replaceSegment. src: $src, dst: $dst")
             setPathSegment(idx, dst)
         }.build()
     }
 
-    fun HttpUrl.addQueryParameter(key: String, value: String): HttpUrl = this.newBuilder().addQueryParameter(key, value).build()
+    fun HttpUrl.addQueryParameter(key: String, value: String): HttpUrl =
+        this.newBuilder().addQueryParameter(key, value).build()
 
     fun HttpUrl.addBranch(branch: String): HttpUrl = this.addQueryParameter("ref", branch)
 
@@ -29,8 +31,8 @@ object GitHubClientUtils {
     fun HttpUrl.replaceRepository(repository: String): HttpUrl = this.replaceSegment("{repository}", repository)
     fun HttpUrl.replacePath(path: String): HttpUrl = this.replaceSegment("{path}", path)
 
-    fun Headers.isDir() : Boolean = this.values("Content-Type").contains("application/json")
-    fun Response.isDir() : Boolean = this.headers.isDir()
+    fun Headers.isDir(): Boolean = this.values("Content-Type").contains("application/json")
+    fun Response.isDir(): Boolean = this.headers.isDir()
 
     fun Response.bodyToString() = body?.bytes()?.toString(Charsets.UTF_8)
 
@@ -38,7 +40,6 @@ object GitHubClientUtils {
         AUTHORIZATION("Authorization"),
         ACCEPT("Accept"),
         GITHUB_VERSION("X-GitHub-Api-Version"),
-        CONTENT_TYPE("Content-Type"),
     }
 
     enum class AcceptType(val value: String) {
@@ -50,6 +51,7 @@ object GitHubClientUtils {
     enum class GitHubContentType {
         @JsonProperty("file")
         FILE,
+
         @JsonProperty("dir")
         DIR;
     }
