@@ -63,7 +63,7 @@ class GitHubContentClientTest {
         val r = gitHubContentClient.getDirectoryContents("asd","zxc","qwe")
 
         Assertions.assertEquals(
-            om.writeValueAsString(dirObjList), r
+            dirObjList, r
         )
     }
 }
