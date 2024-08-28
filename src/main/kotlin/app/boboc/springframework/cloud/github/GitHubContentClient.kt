@@ -13,7 +13,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
-class GithubContentClient(
+class GitHubContentClient(
     token: String,
     uri: String = DEFAULT_HTTP_URI
 ) {
