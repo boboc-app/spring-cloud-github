@@ -1,11 +1,12 @@
-package app.boboc.springframework.cloud.github
+package app.boboc.client.github
 
-import app.boboc.springframework.cloud.github.GitHubClientUtils.add
-import app.boboc.springframework.cloud.github.GitHubClientUtils.bodyToString
-import app.boboc.springframework.cloud.github.GitHubClientUtils.isDir
-import app.boboc.springframework.cloud.github.GitHubClientUtils.replaceOwner
-import app.boboc.springframework.cloud.github.GitHubClientUtils.replacePath
-import app.boboc.springframework.cloud.github.GitHubClientUtils.replaceRepository
+import app.boboc.client.github.GitHubClientUtils.add
+import app.boboc.client.github.GitHubClientUtils.bodyToString
+import app.boboc.client.github.GitHubClientUtils.isDir
+import app.boboc.client.github.GitHubClientUtils.replaceOwner
+import app.boboc.client.github.GitHubClientUtils.replacePath
+import app.boboc.client.github.GitHubClientUtils.replaceRepository
+import app.boboc.springframework.cloud.github.Exceptions
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory

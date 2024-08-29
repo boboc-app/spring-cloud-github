@@ -1,12 +1,13 @@
 package app.boboc.springframework.cloud.github
 
+import app.boboc.client.github.GitHubContentClient
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.dirObjList
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.fileBody
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockResponseDir
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockResponseDirFail
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockResponseFile
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.om
-import app.boboc.springframework.cloud.github.GitHubClientUtils.bodyToString
+import app.boboc.client.github.GitHubClientUtils.bodyToString
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
