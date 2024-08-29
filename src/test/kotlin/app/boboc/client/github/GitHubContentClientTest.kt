@@ -1,12 +1,11 @@
-package app.boboc.springframework.cloud.github
+package app.boboc.client.github
 
-import app.boboc.client.github.GitHubContentClient
-import app.boboc.springframework.cloud.github.GitHubClientTestHelper.dirObjList
-import app.boboc.springframework.cloud.github.GitHubClientTestHelper.fileBody
-import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockResponseDir
-import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockResponseDirFail
-import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockResponseFile
-import app.boboc.springframework.cloud.github.GitHubClientTestHelper.om
+import app.boboc.client.github.GitHubClientTestHelper.dirObjList
+import app.boboc.client.github.GitHubClientTestHelper.fileBody
+import app.boboc.client.github.GitHubClientTestHelper.mockResponseDir
+import app.boboc.client.github.GitHubClientTestHelper.mockResponseDirFail
+import app.boboc.client.github.GitHubClientTestHelper.mockResponseFile
+import app.boboc.client.github.GitHubClientTestHelper.om
 import app.boboc.client.github.GitHubClientUtils.bodyToString
 import app.boboc.common.Exceptions
 import okhttp3.mockwebserver.MockWebServer
@@ -27,7 +26,7 @@ class GitHubContentClientTest {
 
     @Test
     fun getContentResponse() {
-        val gitHubContentClient = GitHubContentClient(token =  GitHubClientTestHelper.API_KEY, uri = baseUrl)
+        val gitHubContentClient = GitHubContentClient(token = GitHubClientTestHelper.API_KEY, uri = baseUrl)
         mockWebServer.enqueue(mockResponseDir)
         val r = gitHubContentClient.getContentResponse("asd","zxc","qwe")
 
@@ -38,7 +37,7 @@ class GitHubContentClientTest {
 
     @Test
     fun getContentResponse_throw() {
-        val gitHubContentClient = GitHubContentClient(token =  GitHubClientTestHelper.API_KEY, uri = baseUrl)
+        val gitHubContentClient = GitHubContentClient(token = GitHubClientTestHelper.API_KEY, uri = baseUrl)
         mockWebServer.enqueue(mockResponseDirFail)
 
         Assertions.assertThrows(Exceptions.GitHubClientException::class.java) {
@@ -48,7 +47,7 @@ class GitHubContentClientTest {
 
     @Test
     fun getFileContent() {
-        val gitHubContentClient = GitHubContentClient(token =  GitHubClientTestHelper.API_KEY, uri = baseUrl)
+        val gitHubContentClient = GitHubContentClient(token = GitHubClientTestHelper.API_KEY, uri = baseUrl)
         mockWebServer.enqueue(mockResponseFile)
         val r = gitHubContentClient.getFileContent("asd","zxc","qwe")
 
@@ -59,7 +58,7 @@ class GitHubContentClientTest {
 
     @Test
     fun getDirectoryContents() {
-        val gitHubContentClient = GitHubContentClient(token =  GitHubClientTestHelper.API_KEY, uri = baseUrl)
+        val gitHubContentClient = GitHubContentClient(token = GitHubClientTestHelper.API_KEY, uri = baseUrl)
         mockWebServer.enqueue(mockResponseDir)
         println(mockResponseDir.headers)
         val r = gitHubContentClient.getDirectoryContents("asd","zxc","qwe")
