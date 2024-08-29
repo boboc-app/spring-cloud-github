@@ -1,6 +1,6 @@
 package app.boboc.client.github
 
-import app.boboc.springframework.cloud.github.Exceptions
+import app.boboc.common.Exceptions
 import com.fasterxml.jackson.annotation.JsonProperty
 import okhttp3.Headers
 import okhttp3.HttpUrl

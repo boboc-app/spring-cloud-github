@@ -6,7 +6,7 @@ import app.boboc.client.github.GitHubClientUtils.isDir
 import app.boboc.client.github.GitHubClientUtils.replaceOwner
 import app.boboc.client.github.GitHubClientUtils.replacePath
 import app.boboc.client.github.GitHubClientUtils.replaceRepository
-import app.boboc.springframework.cloud.github.Exceptions
+import app.boboc.common.Exceptions
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory

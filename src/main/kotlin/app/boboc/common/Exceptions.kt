@@ -1,4 +1,4 @@
-package app.boboc.springframework.cloud.github
+package app.boboc.common
 
 class Exceptions {
     abstract class BoBocException(

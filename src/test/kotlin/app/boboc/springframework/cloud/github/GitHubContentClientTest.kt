@@ -8,6 +8,7 @@ import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockRespons
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.mockResponseFile
 import app.boboc.springframework.cloud.github.GitHubClientTestHelper.om
 import app.boboc.client.github.GitHubClientUtils.bodyToString
+import app.boboc.common.Exceptions
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
