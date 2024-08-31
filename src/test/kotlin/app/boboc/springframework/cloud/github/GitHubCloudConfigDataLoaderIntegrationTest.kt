@@ -18,7 +18,10 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
 
     companion object{
         lateinit var url: String
-        const val FIRST_RESOURCE_PATH = "path/resource1"
+        const val YAML_RESOURCE = "path/resource1"
+        const val PLAIN_TEXT_RESOURCE = "path/resource2"
+        const val JSON_RESOURCE = "path/resource3"
+        const val NEED_FLATTEN_RESOURCE = "path/resource4"
     }
 
     @BeforeEach
@@ -27,12 +30,39 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
         url = mockWebServer.url("").toUrl().toString()
         mockWebServer.dispatcher = object: Dispatcher(){
             override fun dispatch(request: RecordedRequest): MockResponse {
-                return if(request.path!!.endsWith(FIRST_RESOURCE_PATH)){
+                return if(request.path!!.endsWith(YAML_RESOURCE)){
                     MockResponse()
                         .setResponseCode(200)
                         .setBody("""
                             first: 1
                             inner.second: 2
+                        """.trimIndent())
+                        .setHeader("Content-Type", "application/vnd.github.raw+json")
+                }
+                else if(request.path!!.endsWith(PLAIN_TEXT_RESOURCE)){
+                    MockResponse()
+                        .setResponseCode(200)
+                        .setBody("plain text message")
+                        .setHeader("Content-Type", "application/vnd.github.raw+json")
+                }
+                else if(request.path!!.endsWith(JSON_RESOURCE)){
+                    MockResponse()
+                        .setResponseCode(200)
+                        .setBody("""
+                            {
+                                "first": 1,
+                                "second": 2
+                            }
+                        """.trimIndent())
+                        .setHeader("Content-Type", "application/vnd.github.raw+json")
+                }
+                else if(request.path!!.endsWith(NEED_FLATTEN_RESOURCE)){
+                    MockResponse()
+                        .setResponseCode(200)
+                        .setBody("""
+                            first: 1
+                            inner:
+                                second: 2
                         """.trimIndent())
                         .setHeader("Content-Type", "application/vnd.github.raw+json")
                 }
@@ -46,7 +76,7 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
     fun resolveProperties() {
         val owner = "owner"
         val repo = "repository"
-        val path = FIRST_RESOURCE_PATH
+        val path = YAML_RESOURCE
         val app = WrappedApplication()
             .withSpringImport("github-cloud/$owner/$repo:$path")
 
@@ -54,7 +84,62 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
 
         Assertions.assertEquals(context.environment.getProperty("first"), "1")
         Assertions.assertEquals(context.environment.getProperty("inner.second"), "2")
+    }
 
+    @Test
+    fun resolvePlainTextProperties() {
+        val owner = "owner"
+        val repo = "repository"
+        val path = PLAIN_TEXT_RESOURCE
+        val app = WrappedApplication()
+            .withSpringImport("github-cloud/$owner/$repo:$path")
+
+        val context = app.run()
+
+        Assertions.assertEquals(context.environment.getProperty("resource2"), "plain text message")
+    }
+
+    @Test
+    fun resolveMultipleProperties() {
+        val owner = "owner"
+        val repo = "repository"
+        val path = "$PLAIN_TEXT_RESOURCE;$YAML_RESOURCE"
+        val app = WrappedApplication()
+            .withSpringImport("github-cloud/$owner/$repo:$path")
+
+        val context = app.run()
+
+        Assertions.assertEquals(context.environment.getProperty("resource2"), "plain text message")
+        Assertions.assertEquals(context.environment.getProperty("first"), "1")
+        Assertions.assertEquals(context.environment.getProperty("inner.second"), "2")
+    }
+
+    @Test
+    fun resolveJsonProperties() {
+        val owner = "owner"
+        val repo = "repository"
+        val path = JSON_RESOURCE
+        val app = WrappedApplication()
+            .withSpringImport("github-cloud/$owner/$repo:$path")
+
+        val context = app.run()
+
+        Assertions.assertEquals(context.environment.getProperty("first"), "1")
+        Assertions.assertEquals(context.environment.getProperty("second"), "2")
+    }
+
+    @Test
+    fun resolveNeedFlattenPropertied(){
+        val owner = "owner"
+        val repo = "repository"
+        val path = NEED_FLATTEN_RESOURCE
+        val app = WrappedApplication()
+            .withSpringImport("github-cloud/$owner/$repo:$path")
+
+        val context = app.run()
+
+        Assertions.assertEquals(context.environment.getProperty("first"), "1")
+        Assertions.assertEquals(context.environment.getProperty("inner.second"), "2")
     }
 
     class WrappedApplication(

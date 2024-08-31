@@ -1,9 +1,9 @@
 package app.boboc.springframework.cloud.github
 
 import app.boboc.client.github.GitHubContentClient
-import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.core.env.EnumerablePropertySource
@@ -34,7 +34,7 @@ class GitHubCloudPropertySource(
                     objectMapper.readValue(content, PROPERTY_TYPE_REFERENCE)
                 }.recover {
                     when (it) {
-                        is JsonParseException -> {
+                        is MismatchedInputException -> {
                             mapOf(path.split("/").last() to content)
                         }
 
@@ -43,6 +43,16 @@ class GitHubCloudPropertySource(
                 }.getOrThrow()
             }
 
+    }
+
+    fun Map<String, Any>.flatMap(upperKey: String? = null){
+        val prefixKey = upperKey?.let{ "$it." } ?: ""
+        this.map {
+            if(it.value is String){
+                prefixKey+it.key to it.value
+            }
+
+        }
     }
 
     override fun getProperty(name: String): Any? = properties[name]
