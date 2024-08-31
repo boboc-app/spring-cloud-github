@@ -18,6 +18,7 @@ dependencyManagement {
         dependency("org.springframework.cloud:spring-cloud-context:4.1.0")
         dependency("org.springframework.boot:spring-boot:3.0.1")
         dependency("org.springframework.boot:spring-boot-autoconfigure:3.0.1")
+        dependency("org.springframework.boot:spring-boot-starter-test:3.0.1")
     }
 }
 
@@ -36,6 +37,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.test {

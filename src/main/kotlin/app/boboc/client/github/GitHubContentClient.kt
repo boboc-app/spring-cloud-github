@@ -16,7 +16,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class GitHubContentClient(
     token: String,
-    uri: String = DEFAULT_BASE_URL
+    uri: String?
 ) {
 
     companion object {
@@ -27,7 +27,7 @@ class GitHubContentClient(
         val DIRECTORY_TYPE_REFERENCE = object : TypeReference<List<GitHubDirectoryContent>>() {}
     }
 
-    private val url = "$uri/$CONTENT_SEGMENT".toHttpUrlOrNull()!!
+    private val url = "${uri ?: DEFAULT_BASE_URL}/$CONTENT_SEGMENT".toHttpUrlOrNull()!!
 
     private val httpClient: OkHttpClient = OkHttpClient().newBuilder().build()
 
@@ -59,7 +59,7 @@ class GitHubContentClient(
                 if (!it.isSuccessful) {
                     throw Exceptions.GitHubClientException(it.bodyToString() ?: it.message)
                 }
-                if(it.body == null){
+                if (it.body == null) {
                     throw Exceptions.GitHubClientException("Body cannot be null")
                 }
             }
@@ -68,17 +68,22 @@ class GitHubContentClient(
     fun getFileContent(owner: String, repository: String, path: String, branch: String? = null): String {
         return getContentResponse(owner, repository, path, branch)
             .also {
-                if(it.isDir()){
+                if (it.isDir()) {
                     throw Exceptions.GitHubClientException("Path should be a file.")
                 }
             }
             .bodyToString()!!
     }
 
-    fun getDirectoryContents(owner: String, repository: String, path: String, branch: String? = null): List<GitHubDirectoryContent>? {
+    fun getDirectoryContents(
+        owner: String,
+        repository: String,
+        path: String,
+        branch: String? = null
+    ): List<GitHubDirectoryContent>? {
         return getContentResponse(owner, repository, path, branch)
             .also {
-                if( ! it.isDir()){
+                if (!it.isDir()) {
                     throw Exceptions.GitHubClientException("Path should be a directory.")
                 }
             }
