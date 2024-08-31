@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner
 class GitHubCloudAutoConfigurationTest {
 
     companion object {
-        val contextRunner = ApplicationContextRunner()
+        val contextRunner: ApplicationContextRunner = ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(GitHubCloudAutoConfiguration::class.java))
     }
 

@@ -12,8 +12,8 @@ class GitHubCloudPropertySource(
     private val gitHubContentClient: GitHubContentClient,
     private val owner: String,
     private val repository: String,
-    private val path: String,
     private val ref: String? = null,
+    private val path: String,
 ) : EnumerablePropertySource<GitHubContentClient>(
     "$PROPERTY_SOURCE_PREFIX/$owner/$repository" +( if (ref != null) "/$ref:" else ":" )+ path,
     gitHubContentClient

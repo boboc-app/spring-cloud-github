@@ -1,6 +1,7 @@
 package app.boboc.client.github
 
 import app.boboc.client.github.GitHubClientUtils.add
+import app.boboc.client.github.GitHubClientUtils.addQueryParameter
 import app.boboc.client.github.GitHubClientUtils.bodyToString
 import app.boboc.client.github.GitHubClientUtils.isDir
 import app.boboc.client.github.GitHubClientUtils.replaceOwner
@@ -38,8 +39,11 @@ class GitHubContentClient(
         .build()
 
     private fun sendRequest(req: Request): Response {
-        return httpClient.newCall(req)
-            .execute()
+        println(req.url.toString())
+        return httpClient
+                .newCall(req)
+                .execute()
+
     }
 
     private fun contentRequest(owner: String, repository: String, path: String, branch: String? = null): Request {
@@ -100,7 +104,7 @@ class GitHubContentClient(
 
     private fun HttpUrl.addBranch(branch: String?): HttpUrl {
         return if (branch != null)
-            this.addBranch(branch)
+            this.addQueryParameter("refs", branch)
         else
             this
     }

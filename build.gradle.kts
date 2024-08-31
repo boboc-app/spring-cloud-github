@@ -35,8 +35,9 @@ dependencies {
 
 
     testImplementation(kotlin("test"))
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testImplementation("com.squareup.okhttp3:okhttp:4.12.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

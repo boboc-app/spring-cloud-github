@@ -30,7 +30,14 @@ object GitHubClientUtils {
 
     fun HttpUrl.replaceOwner(owner: String): HttpUrl = this.replaceSegment("{owner}", owner)
     fun HttpUrl.replaceRepository(repository: String): HttpUrl = this.replaceSegment("{repository}", repository)
-    fun HttpUrl.replacePath(path: String): HttpUrl = this.replaceSegment("{path}", path)
+    fun HttpUrl.replacePath(path: String): HttpUrl {
+        val builder = newBuilder()
+        val pathIdx = pathSegments.indexOf("{path}")
+        builder.removePathSegment(pathIdx)
+        builder.addPathSegments(path)
+
+        return builder.build()
+    }
 
     fun Headers.isDir(): Boolean = this.values("Content-Type").contains("application/json")
     fun Response.isDir(): Boolean = this.headers.isDir()

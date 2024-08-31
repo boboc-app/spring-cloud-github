@@ -12,4 +12,6 @@ class GitHubCloudConfigDataLoader: ConfigDataLoader<GitHubCloudConfigDataResourc
 
         return ConfigData(listOf(resource.getPropertySource(ghClient)))
     }
+
+
 }
