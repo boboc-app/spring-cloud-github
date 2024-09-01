@@ -1,11 +1,13 @@
-package app.boboc.springframework.cloud.github
+package app.boboc.client.github
 
-import app.boboc.springframework.cloud.github.GitHubClientUtils.add
-import app.boboc.springframework.cloud.github.GitHubClientUtils.bodyToString
-import app.boboc.springframework.cloud.github.GitHubClientUtils.isDir
-import app.boboc.springframework.cloud.github.GitHubClientUtils.replaceOwner
-import app.boboc.springframework.cloud.github.GitHubClientUtils.replacePath
-import app.boboc.springframework.cloud.github.GitHubClientUtils.replaceRepository
+import app.boboc.client.github.GitHubClientUtils.add
+import app.boboc.client.github.GitHubClientUtils.addQueryParameter
+import app.boboc.client.github.GitHubClientUtils.bodyToString
+import app.boboc.client.github.GitHubClientUtils.isDir
+import app.boboc.client.github.GitHubClientUtils.replaceOwner
+import app.boboc.client.github.GitHubClientUtils.replacePath
+import app.boboc.client.github.GitHubClientUtils.replaceRepository
+import app.boboc.common.Exceptions
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -15,7 +17,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class GitHubContentClient(
     token: String,
-    uri: String = DEFAULT_BASE_URL
+    uri: String?
 ) {
 
     companion object {
@@ -26,7 +28,7 @@ class GitHubContentClient(
         val DIRECTORY_TYPE_REFERENCE = object : TypeReference<List<GitHubDirectoryContent>>() {}
     }
 
-    private val url = "$uri/$CONTENT_SEGMENT".toHttpUrlOrNull()!!
+    private val url = "${uri ?: DEFAULT_BASE_URL}/$CONTENT_SEGMENT".toHttpUrlOrNull()!!
 
     private val httpClient: OkHttpClient = OkHttpClient().newBuilder().build()
 
@@ -37,8 +39,11 @@ class GitHubContentClient(
         .build()
 
     private fun sendRequest(req: Request): Response {
-        return httpClient.newCall(req)
-            .execute()
+        println(req.url.toString())
+        return httpClient
+                .newCall(req)
+                .execute()
+
     }
 
     private fun contentRequest(owner: String, repository: String, path: String, branch: String? = null): Request {
@@ -58,7 +63,7 @@ class GitHubContentClient(
                 if (!it.isSuccessful) {
                     throw Exceptions.GitHubClientException(it.bodyToString() ?: it.message)
                 }
-                if(it.body == null){
+                if (it.body == null) {
                     throw Exceptions.GitHubClientException("Body cannot be null")
                 }
             }
@@ -67,17 +72,22 @@ class GitHubContentClient(
     fun getFileContent(owner: String, repository: String, path: String, branch: String? = null): String {
         return getContentResponse(owner, repository, path, branch)
             .also {
-                if(it.isDir()){
+                if (it.isDir()) {
                     throw Exceptions.GitHubClientException("Path should be a file.")
                 }
             }
             .bodyToString()!!
     }
 
-    fun getDirectoryContents(owner: String, repository: String, path: String, branch: String? = null): List<GitHubDirectoryContent>? {
+    fun getDirectoryContents(
+        owner: String,
+        repository: String,
+        path: String,
+        branch: String? = null
+    ): List<GitHubDirectoryContent>? {
         return getContentResponse(owner, repository, path, branch)
             .also {
-                if( ! it.isDir()){
+                if (!it.isDir()) {
                     throw Exceptions.GitHubClientException("Path should be a directory.")
                 }
             }
@@ -94,7 +104,7 @@ class GitHubContentClient(
 
     private fun HttpUrl.addBranch(branch: String?): HttpUrl {
         return if (branch != null)
-            this.addBranch(branch)
+            this.addQueryParameter("refs", branch)
         else
             this
     }

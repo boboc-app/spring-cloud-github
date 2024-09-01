@@ -1,0 +1,5 @@
+org.springframework.boot.context.config.ConfigDataLoader =\
+  app.boboc.springframework.cloud.github.GitHubCloudConfigDataLoader
+
+org.springframework.boot.context.config.ConfigDataLocationResolver =\
+   app.boboc.springframework.cloud.github.GitHubCloudConfigDataLocationResolver

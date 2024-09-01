@@ -1,5 +1,6 @@
-package app.boboc.springframework.cloud.github
+package app.boboc.client.github
 
+import app.boboc.common.Exceptions
 import com.fasterxml.jackson.annotation.JsonProperty
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -29,7 +30,14 @@ object GitHubClientUtils {
 
     fun HttpUrl.replaceOwner(owner: String): HttpUrl = this.replaceSegment("{owner}", owner)
     fun HttpUrl.replaceRepository(repository: String): HttpUrl = this.replaceSegment("{repository}", repository)
-    fun HttpUrl.replacePath(path: String): HttpUrl = this.replaceSegment("{path}", path)
+    fun HttpUrl.replacePath(path: String): HttpUrl {
+        val builder = newBuilder()
+        val pathIdx = pathSegments.indexOf("{path}")
+        builder.removePathSegment(pathIdx)
+        builder.addPathSegments(path)
+
+        return builder.build()
+    }
 
     fun Headers.isDir(): Boolean = this.values("Content-Type").contains("application/json")
     fun Response.isDir(): Boolean = this.headers.isDir()

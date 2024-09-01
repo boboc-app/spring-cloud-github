@@ -1,7 +1,7 @@
-package app.boboc.springframework.cloud.github
+package app.boboc.client.github
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import app.boboc.springframework.cloud.github.GitHubClientUtils.GitHubContentType
+import app.boboc.client.github.GitHubClientUtils.GitHubContentType
 import java.net.URL
 
 
