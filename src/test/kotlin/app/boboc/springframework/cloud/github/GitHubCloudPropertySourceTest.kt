@@ -17,8 +17,8 @@ class GitHubCloudPropertySourceTest {
             gitHubContentClient,
             "owner",
             "repository",
-            "test",
-            "branch"
+            "branch",
+            "test"
         )
         Assertions.assertEquals(expect["test1"], propertySource.getProperty("test1"))
         Assertions.assertEquals(expect["test2"], propertySource.getProperty("test2"))

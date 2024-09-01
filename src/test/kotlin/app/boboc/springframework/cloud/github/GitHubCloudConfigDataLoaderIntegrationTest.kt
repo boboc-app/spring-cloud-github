@@ -21,7 +21,6 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
         const val YAML_RESOURCE = "path/resource1"
         const val PLAIN_TEXT_RESOURCE = "path/resource2"
         const val JSON_RESOURCE = "path/resource3"
-        const val NEED_FLATTEN_RESOURCE = "path/resource4"
     }
 
     @BeforeEach
@@ -56,16 +55,6 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
                         """.trimIndent())
                         .setHeader("Content-Type", "application/vnd.github.raw+json")
                 }
-                else if(request.path!!.endsWith(NEED_FLATTEN_RESOURCE)){
-                    MockResponse()
-                        .setResponseCode(200)
-                        .setBody("""
-                            first: 1
-                            inner:
-                                second: 2
-                        """.trimIndent())
-                        .setHeader("Content-Type", "application/vnd.github.raw+json")
-                }
                 else MockResponse().setResponseCode(404)
             }
         }
@@ -82,8 +71,8 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
 
         val context = app.run()
 
-        Assertions.assertEquals(context.environment.getProperty("first"), "1")
-        Assertions.assertEquals(context.environment.getProperty("inner.second"), "2")
+        Assertions.assertEquals("1", context.environment.getProperty("first") )
+        Assertions.assertEquals("2", context.environment.getProperty("inner.second") )
     }
 
     @Test
@@ -96,7 +85,7 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
 
         val context = app.run()
 
-        Assertions.assertEquals(context.environment.getProperty("resource2"), "plain text message")
+        Assertions.assertEquals("plain text message", context.environment.getProperty("resource2"))
     }
 
     @Test
@@ -109,9 +98,9 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
 
         val context = app.run()
 
-        Assertions.assertEquals(context.environment.getProperty("resource2"), "plain text message")
-        Assertions.assertEquals(context.environment.getProperty("first"), "1")
-        Assertions.assertEquals(context.environment.getProperty("inner.second"), "2")
+        Assertions.assertEquals("plain text message", context.environment.getProperty("resource2") )
+        Assertions.assertEquals("1", context.environment.getProperty("first") )
+        Assertions.assertEquals("2", context.environment.getProperty("inner.second") )
     }
 
     @Test
@@ -124,22 +113,8 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
 
         val context = app.run()
 
-        Assertions.assertEquals(context.environment.getProperty("first"), "1")
-        Assertions.assertEquals(context.environment.getProperty("second"), "2")
-    }
-
-    @Test
-    fun resolveNeedFlattenPropertied(){
-        val owner = "owner"
-        val repo = "repository"
-        val path = NEED_FLATTEN_RESOURCE
-        val app = WrappedApplication()
-            .withSpringImport("github-cloud/$owner/$repo:$path")
-
-        val context = app.run()
-
-        Assertions.assertEquals(context.environment.getProperty("first"), "1")
-        Assertions.assertEquals(context.environment.getProperty("inner.second"), "2")
+        Assertions.assertEquals("1",context.environment.getProperty("first"))
+        Assertions.assertEquals("2", context.environment.getProperty("second"))
     }
 
     class WrappedApplication(
