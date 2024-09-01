@@ -139,6 +139,9 @@ class GitHubCloudConfigDataLoaderIntegrationTest {
         }
 
         fun run(): ConfigurableApplicationContext {
+            appArgument.forEach {
+                println(it)
+            }
             return app.run(*appArgument)
         }
     }

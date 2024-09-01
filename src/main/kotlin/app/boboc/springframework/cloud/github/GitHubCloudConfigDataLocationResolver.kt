@@ -13,9 +13,12 @@ import kotlin.reflect.KClass
 class GitHubCloudConfigDataLocationResolver(
     deferredLogFactory: DeferredLogFactory
 ) : ConfigDataLocationResolver<GitHubCloudConfigDataResource> {
+
+    val log = deferredLogFactory.getLog(GitHubCloudConfigDataLocationResolver::class.java)
+
+
     companion object {
         const val PREFIX = "github-cloud/"
-
     }
 
     override fun isResolvable(
@@ -28,11 +31,17 @@ class GitHubCloudConfigDataLocationResolver(
         context: ConfigDataLocationResolverContext,
         location: ConfigDataLocation
     ): List<GitHubCloudConfigDataResource> {
-        val properties = context.binder.loadProperties()
-        context.registerBean(GitHubCloudProperties::class, properties)
-        context.registerBean(GitHubContentClient::class, createGitHubContentClient(properties))
-        return resolveContexts(location.getNonPrefixedValue(PREFIX))
-            .buildResources()
+        return try {
+            log.info("Resolving - ${location.value}")
+            val properties = context.binder.loadProperties()
+            context.registerBean(GitHubCloudProperties::class, properties)
+            context.registerBean(GitHubContentClient::class, createGitHubContentClient(properties))
+            resolveContexts(location.getNonPrefixedValue(PREFIX))
+                .buildResources()
+        } catch (e: Exception) {
+            log.info("Fail to resolve. cause of - [${e.message}]")
+            throw e
+        }
     }
 
     private fun resolveContexts(value: String): ResolvedContexts {
@@ -58,7 +67,7 @@ class GitHubCloudConfigDataLocationResolver(
             }
     }
 
-    private fun <T : Any> ConfigDataLocationResolverContext.registerBean(clazz: KClass<T>, value: T){
+    private fun <T : Any> ConfigDataLocationResolverContext.registerBean(clazz: KClass<T>, value: T) {
         bootstrapContext.registerIfAbsent(
             clazz.java,
             BootstrapRegistry.InstanceSupplier.of(value)

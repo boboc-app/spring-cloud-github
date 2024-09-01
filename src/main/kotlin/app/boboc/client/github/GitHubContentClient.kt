@@ -39,7 +39,6 @@ class GitHubContentClient(
         .build()
 
     private fun sendRequest(req: Request): Response {
-        println(req.url.toString())
         return httpClient
                 .newCall(req)
                 .execute()
