@@ -80,7 +80,7 @@ tasks.jar{
 
 
 group = "app.boboc"
-version = "0.0.2"
+version = springBootVersion
 
 val groupName = group.toString()
 val artifactId = "spring-cloud-github"
