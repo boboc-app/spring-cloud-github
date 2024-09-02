@@ -42,3 +42,6 @@ spring:
         import: github-cloud/{owner}/{repository}:{path1};{path2};{path3}
 ```
 
+### Example
+[Demo Project](https://github.com/boboc-app/spring-cloud-github-demo) <br>
+[Demo Property](https://github.com/boboc-app/spring-cloud-github-demo-property)
